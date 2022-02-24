@@ -1,12 +1,24 @@
 // import { useState } from 'react';
 // import NavBar from '../components/NavBar';
 // import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Seo from '../components/Seo';
 
 export default function Home({ results }) {
-  const [movies, setMovies] = useState();
-
+  const router = useRouter();
+  const onClick = (id, title) => {
+    router.push(
+      `/movies/${title}/${id}`
+      // {
+      //   pathname: `/movies/${id}`,
+      //   query: {
+      //     title: `${title}`,
+      //   },
+      // },
+      // `/movies/${id}`
+    );
+  };
   // useEffect(() => {
   //   (async () => {
   //     // const { results } = await (await fetch(`/api/movies`)).json();
@@ -26,9 +38,26 @@ export default function Home({ results }) {
       {/* <button onClick={() => setCounter(counter => counter + 1)}>+</button> */}
       {/* {!movies && <h4>Loading...</h4>} */}
       {results?.map(movie => (
-        <div className="movie" key={movie.id}>
+        <div
+          className="movie"
+          key={movie.id}
+          onClick={() => onClick(movie.id, movie.original_title)}
+        >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h4>{movie.original_title}</h4>
+          <Link
+            // href={{
+            //   pathname: `/movies/${movie.id}`,
+            //   query: {
+            //     title: `${movie.original_title}`,
+            //   },
+            // }}
+            // as={`/movies/${movie.id}`}
+            href={`/movies/${movie.original_title}/${movie.id}`}
+          >
+            <a>
+              <h4>{movie.original_title}</h4>
+            </a>
+          </Link>
         </div>
       ))}
       <style jsx>{`
@@ -37,6 +66,9 @@ export default function Home({ results }) {
           grid-template-columns: 1fr 1fr;
           padding: 20px;
           gap: 20px;
+        }
+        .movie {
+          cursor: pointer;
         }
         .movie img {
           max-width: 100%;
